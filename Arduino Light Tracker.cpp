@@ -4,13 +4,13 @@ Servo servoTB;  // Servo for Top-Bottom (Vertical)
 Servo servoLR;  // Servo for Left-Right (Horizontal)
 
 // Analog pins for the photoresistors
-int sensorTop = A0;
-int sensorBottom = A1;
-int sensorLeft = A2;
-int sensorRight = A3;
-
+int sensorTopR = A2;
+int sensorBottomR = A1;
+int sensorTopL = A3;
+int sensorBottomL = A0;
+int const margin = 10;
 // Analog pins for Solar panal voltage
-int SolarP = A4;
+// int SolarP = A4;
 
 // Servo degree variables
 int posTB = 90;  // Initial position TB Servo in the center
@@ -35,11 +35,17 @@ void setup() {
 
 void loop() {
   // Read light from each sensor
-  int Top = analogRead(sensorTop);
-  int Bottom = analogRead(sensorBottom);
-  int Left = analogRead(sensorLeft);
-  int Right = analogRead(sensorRight);
+  int TopR = analogRead(sensorTopR);
+  int BottomR = analogRead(sensorBottomR);
+  int TopL = analogRead(sensorTopL);
+  int BottomL = analogRead(sensorBottomL);
   
+  int Top = TopR + TopL;
+  int Bottom = BottomR + BottomL;
+
+int Left = TopL + BottomL;
+int Right = TopR + BottomR;
+
   int TBDifference = Top - Bottom; // Measures the difference in light intensity on an axis
   int LRDifference = Left - Right;
 
@@ -49,30 +55,30 @@ void loop() {
   }
 
 // Adjust servo incrementally
-  if (TBDifference > 0) {
-    posTB += 1;
-    servoTB.write(posTB);
-  } else if (TBDifference < 0) {
+  if (TBDifference > margin) {
     posTB -= 1;
-    servoTB.write(posTB);
-  }
+  } else if (TBDifference < margin) {
+    posTB += 1;
+  } else {}
+   servoTB.write(posTB);
 
-if (LRDifference > 0) {
-    posLR += 1;
-    servoLR.write(posLR);
-  } else if (LRDifference < 0) {
+if (LRDifference > margin) {
     posLR -= 1;
-    servoLR.write(posLR);
-  }
+  } else if (LRDifference < margin) {
+    posLR += 1;
+  } else {}
+  
+   servoLR.write(posLR);
 
 // This is a block of code you should use to make sure your photoresistors are connected correctly
-//Serial.println(TBDifference );
-//Serial.println(Bottom);
+Serial.println(TBDifference);
+Serial.println(TopR);
+Serial.println(BottomR);
 
 
-// This block will plot the voltage from the solar pannel. Add "//" to remove overhead if not tracking solar pannel data.
+// This block will plot the voltage from the solar panel. Add "//" to remove overhead if not tracking solar panel data.
 //SolarVolt = analogRead(SolarP);
 //serial.print(SolarVolt);
 
-  delay(100);  // Delay, adjust as needed
+  delay(50);  // Delay, adjust as needed
 }
