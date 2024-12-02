@@ -49,11 +49,6 @@ int Right = TopR + BottomR;
   int TBDifference = Top - Bottom; // Measures the difference in light intensity on an axis
   int LRDifference = Left - Right;
 
-  // Design protection
-  if (posTB > 180 || posTB < 20){
-    servoTB.write(safeRest);
-  }
-
 // Adjust servo incrementally
   if (TBDifference > margin) {
     posTB -= 1;
@@ -80,5 +75,5 @@ Serial.println(BottomR);
 //SolarVolt = analogRead(SolarP);
 //serial.print(SolarVolt);
 
-  delay(50);  // Delay, adjust as needed
+  delay(150);  // Delay, adjust as needed
 }
